@@ -29,7 +29,7 @@ struct SpaceFlightView: View {
                                     .font(.system(size: 15, weight: .bold))
                                     .foregroundColor(.black)
                                     .padding(.horizontal, 20)
-                                    .padding(.vertical, 13)
+                                    .padding(.vertical, 15)
                                     .background(Capsule().fill(Color.cyan))
                                     .shadow(color: .cyan.opacity(0.6), radius: 10)
                             }

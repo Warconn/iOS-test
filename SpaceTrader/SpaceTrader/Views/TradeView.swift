@@ -84,7 +84,7 @@ struct TradeView: View {
             Text(label)
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundColor(selectedCategory == cat ? .black : .white.opacity(0.7))
-                .padding(.horizontal, 10).padding(.vertical, 5)
+                .padding(.horizontal, 12).padding(.vertical, 8)
                 .background(Capsule().fill(selectedCategory == cat ? Color.cyan : Color.white.opacity(0.1)))
         }
         .buttonStyle(.plain)
@@ -183,8 +183,8 @@ struct CommodityRow: View {
             Text(label)
                 .font(.system(size: 13, weight: .bold))
                 .foregroundColor(color)
-                .frame(width: 36, height: 32)
-                .background(RoundedRectangle(cornerRadius: 8).fill(color.opacity(0.18)))
+                .frame(width: 44, height: 44)
+                .background(RoundedRectangle(cornerRadius: 10).fill(color.opacity(0.18)))
         }
         .buttonStyle(.plain)
     }
