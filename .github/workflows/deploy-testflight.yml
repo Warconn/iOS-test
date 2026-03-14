@@ -1,143 +1,198 @@
 name: Deploy to TestFlight
 
-# Trigger manually or on push to main after tests pass
+# ─────────────────────────────────────────────────────────────────────
+# PREREQUISITES – set these in GitHub → Settings → Secrets and Variables
+# → Actions → Repository secrets:
+#
+#   DIST_CERT_BASE64          base64 of your .p12 distribution certificate
+#   DIST_CERT_PASSWORD        password for the .p12 file
+#   KEYCHAIN_PASSWORD         any random string (used to protect the temp keychain)
+#   APPLE_TEAM_ID             your 10-character Apple Developer Team ID
+#
+#   For HeroesAscent:
+#   HA_PROVISION_BASE64       base64 of HeroesAscent_AppStore.mobileprovision
+#
+#   For SpaceTrader:
+#   ST_PROVISION_BASE64       base64 of SpaceTrader_AppStore.mobileprovision
+#
+#   App Store Connect API (shared by both apps):
+#   ASC_KEY_ID                Key ID from appstoreconnect.apple.com/access/api
+#   ASC_ISSUER_ID             Issuer ID from the same page
+#   ASC_KEY_BASE64            base64 of the downloaded AuthKey_XXXXXX.p8 file
+# ─────────────────────────────────────────────────────────────────────
+
 on:
   workflow_dispatch:
     inputs:
-      notes:
-        description: "Release notes for this build"
-        required: false
-        default: "New build from CI"
+      app:
+        description: "Which app to deploy"
+        required: true
+        default: "spacetrader"
+        type: choice
+        options: [heroesascent, spacetrader, both]
   push:
     branches: [main, master]
+    # Only trigger when game source changes
     paths:
       - "HeroesAscent/**"
+      - "SpaceTrader/**"
 
 jobs:
-  deploy:
-    name: Archive & Upload to TestFlight
+  # ── Shared signing setup ───────────────────────────────────────────
+  sign:
+    name: Install signing assets
     runs-on: macos-14
-    # Only deploy on push to main (not on PRs)
-    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-
+    outputs:
+      keychain_path: ${{ steps.keychain.outputs.path }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Select Xcode 15
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
-
-      # ── Code signing ──────────────────────────────────────────────────
-      # You need these secrets set in GitHub repo Settings → Secrets:
-      #   DIST_CERT_BASE64       – base64 of your .p12 distribution certificate
-      #   DIST_CERT_PASSWORD     – password for the .p12
-      #   PROVISION_PROFILE_BASE64 – base64 of your .mobileprovision file
-      #   KEYCHAIN_PASSWORD      – any random string used as keychain password
-      #   APPLE_TEAM_ID          – your 10-char Apple Developer Team ID
-      #   ASC_KEY_ID             – App Store Connect API Key ID
-      #   ASC_ISSUER_ID          – App Store Connect Issuer ID
-      #   ASC_KEY_BASE64         – base64 of your .p8 API key file
-
-      - name: Install signing certificate
+      - id: keychain
+        name: Create keychain and import certificate
         env:
-          DIST_CERT_BASE64: ${{ secrets.DIST_CERT_BASE64 }}
+          DIST_CERT_BASE64:  ${{ secrets.DIST_CERT_BASE64 }}
           DIST_CERT_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
-          CERT_PATH=$RUNNER_TEMP/dist_cert.p12
-          KEYCHAIN_PATH=$RUNNER_TEMP/build.keychain
+          KEYCHAIN=$RUNNER_TEMP/build.keychain
+          CERT=$RUNNER_TEMP/dist.p12
+          echo "$DIST_CERT_BASE64"  | base64 --decode -o "$CERT"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain  -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$CERT" -k "$KEYCHAIN" -P "$DIST_CERT_PASSWORD" -T /usr/bin/codesign
+          security list-keychain -d user -s "$KEYCHAIN"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          echo "path=$KEYCHAIN" >> $GITHUB_OUTPUT
 
-          echo "$DIST_CERT_BASE64" | base64 --decode -o "$CERT_PATH"
+  # ── HeroesAscent deploy ────────────────────────────────────────────
+  deploy-heroesascent:
+    name: Deploy HeroesAscent → TestFlight
+    needs: sign
+    runs-on: macos-14
+    if: |
+      github.event_name == 'workflow_dispatch' && (inputs.app == 'heroesascent' || inputs.app == 'both') ||
+      (github.event_name == 'push' && contains(github.event.head_commit.modified, 'HeroesAscent/'))
+    steps:
+      - uses: actions/checkout@v4
 
-          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security import "$CERT_PATH" -k "$KEYCHAIN_PATH" \
-            -P "$DIST_CERT_PASSWORD" \
-            -T /usr/bin/codesign
-          security list-keychain -d user -s "$KEYCHAIN_PATH"
-          security set-key-partition-list \
-            -S apple-tool:,apple: \
-            -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+      - name: Select Xcode
+        run: |
+          XCODE=$(ls /Applications | grep '^Xcode_15' | sort -V | tail -1)
+          sudo xcode-select -s "/Applications/${XCODE}/Contents/Developer"
 
       - name: Install provisioning profile
         env:
-          PROVISION_PROFILE_BASE64: ${{ secrets.PROVISION_PROFILE_BASE64 }}
+          HA_PROVISION_BASE64: ${{ secrets.HA_PROVISION_BASE64 }}
         run: |
-          PP_PATH=$RUNNER_TEMP/profile.mobileprovision
-          echo "$PROVISION_PROFILE_BASE64" | base64 --decode -o "$PP_PATH"
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp "$PP_PATH" ~/Library/MobileDevice/Provisioning\ Profiles/
+          echo "$HA_PROVISION_BASE64" | base64 --decode \
+            -o ~/Library/MobileDevice/Provisioning\ Profiles/ha_appstore.mobileprovision
 
-      # ── Archive ───────────────────────────────────────────────────────
-      - name: Archive app
+      - name: Archive
         working-directory: HeroesAscent
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           xcodebuild archive \
-            -project HeroesAscent.xcodeproj \
-            -scheme HeroesAscent \
+            -project HeroesAscent.xcodeproj -scheme HeroesAscent \
             -configuration Release \
-            -archivePath $RUNNER_TEMP/HeroesAscent.xcarchive \
             -destination "generic/platform=iOS" \
+            -archivePath $RUNNER_TEMP/HeroesAscent.xcarchive \
             DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="iPhone Distribution" \
             PROVISIONING_PROFILE_SPECIFIER="HeroesAscent AppStore"
 
-      # ── Export IPA ────────────────────────────────────────────────────
-      - name: Create export options plist
+      - name: Export & Upload
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: |
-          cat > $RUNNER_TEMP/ExportOptions.plist << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store-connect</string>
-            <key>teamID</key>
-            <string>${APPLE_TEAM_ID}</string>
-            <key>uploadSymbols</key>
-            <true/>
-            <key>compileBitcode</key>
-            <false/>
-          </dict>
-          </plist>
-          EOF
-
-      - name: Export IPA
-        run: |
-          xcodebuild -exportArchive \
-            -archivePath $RUNNER_TEMP/HeroesAscent.xcarchive \
-            -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist \
-            -exportPath $RUNNER_TEMP/export \
-            -allowProvisioningUpdates
-
-      # ── Upload to TestFlight ──────────────────────────────────────────
-      - name: Upload to TestFlight via altool
-        env:
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_KEY_ID:    ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_BASE64: ${{ secrets.ASC_KEY_BASE64 }}
         run: |
+          cat > $RUNNER_TEMP/ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>uploadSymbols</key><true/>
+          </dict></plist>
+          PLIST
+
+          xcodebuild -exportArchive \
+            -archivePath $RUNNER_TEMP/HeroesAscent.xcarchive \
+            -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist \
+            -exportPath $RUNNER_TEMP/ha_export
+
           mkdir -p ~/.private_keys
-          echo "$ASC_KEY_BASE64" | base64 --decode \
-            -o ~/.private_keys/AuthKey_${ASC_KEY_ID}.p8
+          echo "$ASC_KEY_BASE64" | base64 --decode -o ~/.private_keys/AuthKey_${ASC_KEY_ID}.p8
+          xcrun altool --upload-app --type ios \
+            --file "$RUNNER_TEMP/ha_export/HeroesAscent.ipa" \
+            --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" --verbose
 
-          xcrun altool --upload-app \
-            --type ios \
-            --file "$RUNNER_TEMP/export/HeroesAscent.ipa" \
-            --apiKey "$ASC_KEY_ID" \
-            --apiIssuer "$ASC_ISSUER_ID" \
-            --verbose
+  # ── SpaceTrader deploy ─────────────────────────────────────────────
+  deploy-spacetrader:
+    name: Deploy SpaceTrader → TestFlight
+    needs: sign
+    runs-on: macos-14
+    if: |
+      github.event_name == 'workflow_dispatch' && (inputs.app == 'spacetrader' || inputs.app == 'both') ||
+      (github.event_name == 'push' && contains(github.event.head_commit.modified, 'SpaceTrader/'))
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Upload IPA as artifact (fallback)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: HeroesAscent-ipa
-          path: ${{ runner.temp }}/export/HeroesAscent.ipa
-          if-no-files-found: ignore
+      - name: Select Xcode
+        run: |
+          XCODE=$(ls /Applications | grep '^Xcode_15' | sort -V | tail -1)
+          sudo xcode-select -s "/Applications/${XCODE}/Contents/Developer"
+
+      - name: Install provisioning profile
+        env:
+          ST_PROVISION_BASE64: ${{ secrets.ST_PROVISION_BASE64 }}
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$ST_PROVISION_BASE64" | base64 --decode \
+            -o ~/Library/MobileDevice/Provisioning\ Profiles/st_appstore.mobileprovision
+
+      - name: Archive
+        working-directory: SpaceTrader
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          xcodebuild archive \
+            -project SpaceTrader.xcodeproj -scheme SpaceTrader \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath $RUNNER_TEMP/SpaceTrader.xcarchive \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="iPhone Distribution" \
+            PROVISIONING_PROFILE_SPECIFIER="SpaceTrader AppStore"
+
+      - name: Export & Upload
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID:    ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_BASE64: ${{ secrets.ASC_KEY_BASE64 }}
+        run: |
+          cat > $RUNNER_TEMP/ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>uploadSymbols</key><true/>
+          </dict></plist>
+          PLIST
+
+          xcodebuild -exportArchive \
+            -archivePath $RUNNER_TEMP/SpaceTrader.xcarchive \
+            -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist \
+            -exportPath $RUNNER_TEMP/st_export
+
+          mkdir -p ~/.private_keys
+          echo "$ASC_KEY_BASE64" | base64 --decode -o ~/.private_keys/AuthKey_${ASC_KEY_ID}.p8
+          xcrun altool --upload-app --type ios \
+            --file "$RUNNER_TEMP/st_export/SpaceTrader.ipa" \
+            --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" --verbose
