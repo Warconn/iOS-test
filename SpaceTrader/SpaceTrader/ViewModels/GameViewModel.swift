@@ -77,6 +77,12 @@ final class GameViewModel: ObservableObject {
         let throttle = joystickVector.magnitude
         guard throttle > 0.05 else { return }
 
+        // Update heading (visual direction ship faces) regardless of fuel
+        ship.heading = atan2(joystickVector.y, joystickVector.x) + .pi / 2
+
+        // No thrust when out of fuel
+        guard ship.fuel > 0 else { return }
+
         // Move ship
         let speed  = ship.maxSpeed * CGFloat(throttle)
         let normX  = joystickVector.x / max(throttle, 0.001)
@@ -86,13 +92,8 @@ final class GameViewModel: ObservableObject {
         ship.posX  = newX
         ship.posY  = newY
 
-        // Update heading (visual direction ship faces)
-        ship.heading = atan2(joystickVector.y, joystickVector.x) + .pi / 2
-
         // Consume fuel
-        if ship.fuel > 0 {
-            ship.fuel = max(0, ship.fuel - throttle * ship.fuelConsumptionRate * dt)
-        }
+        ship.fuel = max(0, ship.fuel - throttle * ship.fuelConsumptionRate * dt)
 
         // Discover locations in scanner range
         discoverNear(ship.position, range: ship.scannerRange)
