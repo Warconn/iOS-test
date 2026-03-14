@@ -1,0 +1,536 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA100001 /* HeroesAscentApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001 /* HeroesAscentApp.swift */; };
+		AA100002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002 /* ContentView.swift */; };
+		AA100010 /* Hero.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000010 /* Hero.swift */; };
+		AA100011 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000011 /* Enemy.swift */; };
+		AA100012 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000012 /* Item.swift */; };
+		AA100013 /* Skill.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000013 /* Skill.swift */; };
+		AA100014 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000014 /* GameState.swift */; };
+		AA100020 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000020 /* GameViewModel.swift */; };
+		AA100030 /* BattleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000030 /* BattleView.swift */; };
+		AA100031 /* HeroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000031 /* HeroView.swift */; };
+		AA100032 /* ShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000032 /* ShopView.swift */; };
+		AA100033 /* SkillsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000033 /* SkillsView.swift */; };
+		AA100040 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA000040 /* Assets.xcassets */; };
+		AA200001 /* HeroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA001001 /* HeroTests.swift */; };
+		AA200002 /* EnemyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA001002 /* EnemyTests.swift */; };
+		AA200003 /* ItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA001003 /* ItemTests.swift */; };
+		AA200004 /* SkillTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA001004 /* SkillTests.swift */; };
+		AA200005 /* GameProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA001005 /* GameProgressTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AA000001 /* HeroesAscentApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroesAscentApp.swift; sourceTree = "<group>"; };
+		AA000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AA000010 /* Hero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hero.swift; sourceTree = "<group>"; };
+		AA000011 /* Enemy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
+		AA000012 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		AA000013 /* Skill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skill.swift; sourceTree = "<group>"; };
+		AA000014 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
+		AA000020 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
+		AA000030 /* BattleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BattleView.swift; sourceTree = "<group>"; };
+		AA000031 /* HeroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroView.swift; sourceTree = "<group>"; };
+		AA000032 /* ShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopView.swift; sourceTree = "<group>"; };
+		AA000033 /* SkillsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsView.swift; sourceTree = "<group>"; };
+		AA000040 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AA000050 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA000060 /* HeroesAscent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeroesAscent.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA000070 /* HeroesAscentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HeroesAscentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA001001 /* HeroTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroTests.swift; sourceTree = "<group>"; };
+		AA001002 /* EnemyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnemyTests.swift; sourceTree = "<group>"; };
+		AA001003 /* ItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemTests.swift; sourceTree = "<group>"; };
+		AA001004 /* SkillTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillTests.swift; sourceTree = "<group>"; };
+		AA001005 /* GameProgressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameProgressTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AABP0001 /* Frameworks (Main) */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABP0002 /* Frameworks (Tests) */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AAGRP000 /* root */ = {
+			isa = PBXGroup;
+			children = (
+				AAGRP001 /* HeroesAscent */,
+				AAGRP010 /* HeroesAscentTests */,
+				AAGRP099 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AAGRP001 /* HeroesAscent */ = {
+			isa = PBXGroup;
+			children = (
+				AA000001 /* HeroesAscentApp.swift */,
+				AA000002 /* ContentView.swift */,
+				AA000050 /* Info.plist */,
+				AA000040 /* Assets.xcassets */,
+				AAGRP002 /* Models */,
+				AAGRP003 /* ViewModels */,
+				AAGRP004 /* Views */,
+			);
+			path = HeroesAscent;
+			sourceTree = "<group>";
+		};
+		AAGRP002 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AA000010 /* Hero.swift */,
+				AA000011 /* Enemy.swift */,
+				AA000012 /* Item.swift */,
+				AA000013 /* Skill.swift */,
+				AA000014 /* GameState.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AAGRP003 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				AA000020 /* GameViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		AAGRP004 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AA000030 /* BattleView.swift */,
+				AA000031 /* HeroView.swift */,
+				AA000032 /* ShopView.swift */,
+				AA000033 /* SkillsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AAGRP010 /* HeroesAscentTests */ = {
+			isa = PBXGroup;
+			children = (
+				AA001001 /* HeroTests.swift */,
+				AA001002 /* EnemyTests.swift */,
+				AA001003 /* ItemTests.swift */,
+				AA001004 /* SkillTests.swift */,
+				AA001005 /* GameProgressTests.swift */,
+			);
+			path = HeroesAscentTests;
+			sourceTree = "<group>";
+		};
+		AAGRP099 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AA000060 /* HeroesAscent.app */,
+				AA000070 /* HeroesAscentTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AATGT001 /* HeroesAscent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AACFL001 /* Build configuration list for PBXNativeTarget "HeroesAscent" */;
+			buildPhases = (
+				AABPH001 /* Sources */,
+				AABPH002 /* Resources */,
+				AABP0001 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HeroesAscent;
+			productName = HeroesAscent;
+			productReference = AA000060 /* HeroesAscent.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AATGT002 /* HeroesAscentTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AACFL002 /* Build configuration list for PBXNativeTarget "HeroesAscentTests" */;
+			buildPhases = (
+				AABPH010 /* Sources */,
+				AABPH011 /* Resources */,
+				AABP0002 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AADEP001 /* PBXTargetDependency */,
+			);
+			name = HeroesAscentTests;
+			productName = HeroesAscentTests;
+			productReference = AA000070 /* HeroesAscentTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AAPRJ001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					AATGT001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					AATGT002 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = AATGT001;
+					};
+				};
+			};
+			buildConfigurationList = AACFL000 /* Build configuration list for PBXProject "HeroesAscent" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AAGRP000;
+			productRefGroup = AAGRP099 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AATGT001 /* HeroesAscent */,
+				AATGT002 /* HeroesAscentTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AABPH002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA100040 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABPH011 /* Resources (Tests) */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AABPH001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA100001 /* HeroesAscentApp.swift in Sources */,
+				AA100002 /* ContentView.swift in Sources */,
+				AA100010 /* Hero.swift in Sources */,
+				AA100011 /* Enemy.swift in Sources */,
+				AA100012 /* Item.swift in Sources */,
+				AA100013 /* Skill.swift in Sources */,
+				AA100014 /* GameState.swift in Sources */,
+				AA100020 /* GameViewModel.swift in Sources */,
+				AA100030 /* BattleView.swift in Sources */,
+				AA100031 /* HeroView.swift in Sources */,
+				AA100032 /* ShopView.swift in Sources */,
+				AA100033 /* SkillsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABPH010 /* Sources (Tests) */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA200001 /* HeroTests.swift in Sources */,
+				AA200002 /* EnemyTests.swift in Sources */,
+				AA200003 /* ItemTests.swift in Sources */,
+				AA200004 /* SkillTests.swift in Sources */,
+				AA200005 /* GameProgressTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AADEP001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AATGT001 /* HeroesAscent */;
+			targetProxy = AAPXY001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXContainerItemProxy section */
+		AAPXY001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AAPRJ001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AATGT001;
+			remoteInfo = HeroesAscent;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin XCBuildConfiguration section */
+		AACFG001 /* Debug (Project) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AACFG002 /* Release (Project) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AACFG010 /* Debug (App) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = HeroesAscent/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.heroesascent.game;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AACFG011 /* Release (App) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = HeroesAscent/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.heroesascent.game;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		AACFG020 /* Debug (Tests) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.heroesascent.game.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HeroesAscent.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/HeroesAscent";
+			};
+			name = Debug;
+		};
+		AACFG021 /* Release (Tests) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.heroesascent.game.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HeroesAscent.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/HeroesAscent";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AACFL000 /* Build configuration list for PBXProject "HeroesAscent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AACFG001 /* Debug */,
+				AACFG002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AACFL001 /* Build configuration list for PBXNativeTarget "HeroesAscent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AACFG010 /* Debug */,
+				AACFG011 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AACFL002 /* Build configuration list for PBXNativeTarget "HeroesAscentTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AACFG020 /* Debug */,
+				AACFG021 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = AAPRJ001 /* Project object */;
+}
