@@ -8,7 +8,7 @@ import {
 import { generateUniverse, generateStars, BackgroundStar } from './universe.ts'
 
 const SAVE_KEY = 'spacetrader_web_v1'
-const DOCK_RANGE = 55
+const DOCK_RANGE = 110
 const UNDOCK_COOLDOWN = 2000  // ms
 
 export class GameState {
