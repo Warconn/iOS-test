@@ -1,0 +1,370 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CC100001 /* SpaceTraderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000001 /* SpaceTraderApp.swift */; };
+		CC100002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002 /* ContentView.swift */; };
+		CC100010 /* Commodity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000010 /* Commodity.swift */; };
+		CC100011 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000011 /* Location.swift */; };
+		CC100012 /* Ship.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000012 /* Ship.swift */; };
+		CC100013 /* Universe.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000013 /* Universe.swift */; };
+		CC100020 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000020 /* GameViewModel.swift */; };
+		CC100030 /* JoystickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000030 /* JoystickView.swift */; };
+		CC100031 /* SpaceFlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000031 /* SpaceFlightView.swift */; };
+		CC100032 /* HUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000032 /* HUDView.swift */; };
+		CC100033 /* StationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000033 /* StationView.swift */; };
+		CC100034 /* TradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000034 /* TradeView.swift */; };
+		CC100035 /* ShipUpgradesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000035 /* ShipUpgradesView.swift */; };
+		CC100040 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CC000040 /* Assets.xcassets */; };
+		CC200001 /* CommodityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC001001 /* CommodityTests.swift */; };
+		CC200002 /* LocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC001002 /* LocationTests.swift */; };
+		CC200003 /* ShipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC001003 /* ShipTests.swift */; };
+		CC200004 /* UniverseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC001004 /* UniverseTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CCPXY001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CCPRJ001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CCTGT001;
+			remoteInfo = SpaceTrader;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CC000001 /* SpaceTraderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceTraderApp.swift; sourceTree = "<group>"; };
+		CC000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CC000010 /* Commodity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Commodity.swift; sourceTree = "<group>"; };
+		CC000011 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		CC000012 /* Ship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ship.swift; sourceTree = "<group>"; };
+		CC000013 /* Universe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Universe.swift; sourceTree = "<group>"; };
+		CC000020 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
+		CC000030 /* JoystickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickView.swift; sourceTree = "<group>"; };
+		CC000031 /* SpaceFlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceFlightView.swift; sourceTree = "<group>"; };
+		CC000032 /* HUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUDView.swift; sourceTree = "<group>"; };
+		CC000033 /* StationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationView.swift; sourceTree = "<group>"; };
+		CC000034 /* TradeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradeView.swift; sourceTree = "<group>"; };
+		CC000035 /* ShipUpgradesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipUpgradesView.swift; sourceTree = "<group>"; };
+		CC000040 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CC000050 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CC000060 /* SpaceTrader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceTrader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC000070 /* SpaceTraderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpaceTraderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC001001 /* CommodityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommodityTests.swift; sourceTree = "<group>"; };
+		CC001002 /* LocationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTests.swift; sourceTree = "<group>"; };
+		CC001003 /* ShipTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipTests.swift; sourceTree = "<group>"; };
+		CC001004 /* UniverseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniverseTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CCBP0001 /* Frameworks (Main) */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CCBP0002 /* Frameworks (Tests) */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CCGRP000 /* root */ = {
+			isa = PBXGroup;
+			children = (CCGRP001, CCGRP010, CCGRP099);
+			sourceTree = "<group>";
+		};
+		CCGRP001 /* SpaceTrader */ = {
+			isa = PBXGroup;
+			children = (
+				CC000001 /* SpaceTraderApp.swift */,
+				CC000002 /* ContentView.swift */,
+				CC000050 /* Info.plist */,
+				CC000040 /* Assets.xcassets */,
+				CCGRP002 /* Models */,
+				CCGRP003 /* ViewModels */,
+				CCGRP004 /* Views */,
+			);
+			path = SpaceTrader;
+			sourceTree = "<group>";
+		};
+		CCGRP002 /* Models */ = {
+			isa = PBXGroup;
+			children = (CC000010, CC000011, CC000012, CC000013);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		CCGRP003 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (CC000020);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		CCGRP004 /* Views */ = {
+			isa = PBXGroup;
+			children = (CC000030, CC000031, CC000032, CC000033, CC000034, CC000035);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		CCGRP010 /* SpaceTraderTests */ = {
+			isa = PBXGroup;
+			children = (CC001001, CC001002, CC001003, CC001004);
+			path = SpaceTraderTests;
+			sourceTree = "<group>";
+		};
+		CCGRP099 /* Products */ = {
+			isa = PBXGroup;
+			children = (CC000060, CC000070);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CCTGT001 /* SpaceTrader */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CCCFL001;
+			buildPhases = (CCBPH001, CCBPH002, CCBP0001);
+			buildRules = ();
+			dependencies = ();
+			name = SpaceTrader;
+			productName = SpaceTrader;
+			productReference = CC000060;
+			productType = "com.apple.product-type.application";
+		};
+		CCTGT002 /* SpaceTraderTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CCCFL002;
+			buildPhases = (CCBPH010, CCBPH011, CCBP0002);
+			buildRules = ();
+			dependencies = (CCDEP001);
+			name = SpaceTraderTests;
+			productName = SpaceTraderTests;
+			productReference = CC000070;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CCPRJ001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					CCTGT001 = { CreatedOnToolsVersion = 15.0; };
+					CCTGT002 = { CreatedOnToolsVersion = 15.0; TestTargetID = CCTGT001; };
+				};
+			};
+			buildConfigurationList = CCCFL000;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, Base);
+			mainGroup = CCGRP000;
+			productRefGroup = CCGRP099;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (CCTGT001, CCTGT002);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CCBPH002 /* Resources (Main) */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (CC100040);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CCBPH011 /* Resources (Tests) */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CCBPH001 /* Sources (Main) */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC100001, CC100002,
+				CC100010, CC100011, CC100012, CC100013,
+				CC100020,
+				CC100030, CC100031, CC100032, CC100033, CC100034, CC100035,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CCBPH010 /* Sources (Tests) */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (CC200001, CC200002, CC200003, CC200004);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CCDEP001 = {
+			isa = PBXTargetDependency;
+			target = CCTGT001;
+			targetProxy = CCPXY001;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		CCCFG001 /* Debug (Project) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("DEBUG=1", "$(inherited)");
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CCCFG002 /* Release (Project) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CCCFG010 /* Debug (App) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SpaceTrader/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spacetrader.game;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		CCCFG011 /* Release (App) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SpaceTrader/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spacetrader.game;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		CCCFG020 /* Debug (Tests) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spacetrader.game.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SpaceTrader.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SpaceTrader";
+			};
+			name = Debug;
+		};
+		CCCFG021 /* Release (Tests) */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spacetrader.game.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SpaceTrader.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SpaceTrader";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CCCFL000 /* Project */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (CCCFG001, CCCFG002);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CCCFL001 /* SpaceTrader */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (CCCFG010, CCCFG011);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CCCFL002 /* SpaceTraderTests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (CCCFG020, CCCFG021);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = CCPRJ001 /* Project object */;
+}

@@ -1,4 +1,4 @@
-name: Build & Test
+name: Build & Test – Both Games
 
 on:
   push:
@@ -7,82 +7,99 @@ on:
     branches: [main, master]
 
 jobs:
-  build-and-test:
-    name: Build and Test (iOS Simulator)
+  # ── HeroesAscent ─────────────────────────────────────────────────────
+  heroes-ascent:
+    name: HeroesAscent – Build & Test
     runs-on: macos-14
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Select Xcode 15
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
-
-      - name: Show Xcode version
-        run: xcodebuild -version
-
-      - name: List available simulators
-        run: xcrun simctl list devices available --json | python3 -c "
-import json, sys
-data = json.load(sys.stdin)
-for runtime, devices in data['devices'].items():
-    if 'iOS' in runtime:
-        for d in devices:
-            if d['isAvailable']:
-                print(f\"{runtime}: {d['name']} ({d['udid']})\")
-" | head -20
+      - name: Select Xcode
+        run: |
+          # Use latest available Xcode 15
+          XCODE=$(ls /Applications | grep '^Xcode_15' | sort -V | tail -1)
+          sudo xcode-select -s "/Applications/${XCODE}/Contents/Developer"
+          xcodebuild -version
 
       - name: Build
         working-directory: HeroesAscent
         run: |
+          set -o pipefail
           xcodebuild build \
             -project HeroesAscent.xcodeproj \
             -scheme HeroesAscent \
             -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
             -configuration Debug \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
             | xcpretty || xcodebuild build \
-            -project HeroesAscent.xcodeproj \
-            -scheme HeroesAscent \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
-            -configuration Debug \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+              -project HeroesAscent.xcodeproj -scheme HeroesAscent \
+              -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+              -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
       - name: Test
         working-directory: HeroesAscent
         run: |
+          set -o pipefail
           xcodebuild test \
             -project HeroesAscent.xcodeproj \
             -scheme HeroesAscent \
             -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
             -configuration Debug \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            -resultBundlePath TestResults.xcresult \
-            | xcpretty --report junit --output test-results.xml || true
-
-          # Run again without xcpretty if above fails (xcpretty may not be installed)
-          xcodebuild test \
-            -project HeroesAscent.xcodeproj \
-            -scheme HeroesAscent \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
-            -configuration Debug \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
             -resultBundlePath TestResults.xcresult
 
-      - name: Upload test results
+      - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: |
-            HeroesAscent/TestResults.xcresult
-            HeroesAscent/test-results.xml
+          name: heroesascent-test-results
+          path: HeroesAscent/TestResults.xcresult
+          if-no-files-found: ignore
+
+  # ── SpaceTrader ───────────────────────────────────────────────────────
+  space-trader:
+    name: SpaceTrader – Build & Test
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          XCODE=$(ls /Applications | grep '^Xcode_15' | sort -V | tail -1)
+          sudo xcode-select -s "/Applications/${XCODE}/Contents/Developer"
+          xcodebuild -version
+
+      - name: Build
+        working-directory: SpaceTrader
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project SpaceTrader.xcodeproj \
+            -scheme SpaceTrader \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
+            | xcpretty || xcodebuild build \
+              -project SpaceTrader.xcodeproj -scheme SpaceTrader \
+              -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+              -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+
+      - name: Test
+        working-directory: SpaceTrader
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project SpaceTrader.xcodeproj \
+            -scheme SpaceTrader \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
+            -resultBundlePath TestResults.xcresult
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spacetrader-test-results
+          path: SpaceTrader/TestResults.xcresult
           if-no-files-found: ignore

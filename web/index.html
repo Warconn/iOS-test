@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Space Trader">
+  <title>Space Trader</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100dvh;
+      background: #000; overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', Helvetica, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none; -webkit-user-select: none;
+      color: #fff;
+    }
+
+    #canvas {
+      display: block; position: fixed; inset: 0;
+      touch-action: none;
+    }
+
+    /* ── HUD overlay ───────────────────────────────────────────────────────── */
+    #hud {
+      position: fixed; top: 0; left: 0; right: 0;
+      padding: max(env(safe-area-inset-top, 0px), 12px) 14px 0;
+      pointer-events: none; z-index: 10;
+    }
+    .hud-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .hud-pill {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(0,0,0,0.65); border-radius: 999px;
+      padding: 5px 10px; font-size: 13px; font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+    .credits  { color: #FFD700; font-variant-numeric: tabular-nums; }
+    .fuel-bar-wrap { width: 70px; height: 8px; background: rgba(255,255,255,0.12); border-radius: 4px; overflow: hidden; }
+    .fuel-bar { height: 100%; border-radius: 4px; transition: width 0.3s, background 0.3s; }
+    .fuel-pct { font-size: 10px; min-width: 30px; text-align: right; }
+
+    /* ── Notification toast ─────────────────────────────────────────────── */
+    #notification {
+      position: fixed; bottom: 180px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.8); border: 1px solid rgba(0,229,255,0.35);
+      border-radius: 999px; font-size: 13px; font-weight: 600;
+      padding: 8px 16px; white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity 0.3s; z-index: 20;
+    }
+    #notification.show { opacity: 1; }
+
+    /* ── Dock button ────────────────────────────────────────────────────── */
+    #dock-btn {
+      position: fixed; bottom: 148px; left: 50%; transform: translateX(-50%);
+      background: #00E5FF; color: #000; border: none; border-radius: 999px;
+      font-size: 15px; font-weight: 700; padding: 15px 22px;
+      cursor: pointer; display: none; white-space: nowrap; z-index: 20;
+      box-shadow: 0 0 20px rgba(0,229,255,0.5);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── Fuel warning ───────────────────────────────────────────────────── */
+    #fuel-warn {
+      position: fixed; bottom: 216px; left: 50%; transform: translateX(-50%);
+      color: #EF4444; background: rgba(239,68,68,0.15); border-radius: 999px;
+      font-size: 12px; font-weight: 700; padding: 5px 14px;
+      pointer-events: none; display: none; z-index: 20; white-space: nowrap;
+    }
+
+    /* ── Speed pill ─────────────────────────────────────────────────────── */
+    #speed-pill { display: none; }
+
+    /* ── Station overlay (full-screen sheet) ────────────────────────────── */
+    #station {
+      position: fixed; inset: 0;
+      background: #0D0D1A;
+      display: none; flex-direction: column; overflow: hidden;
+      z-index: 50;
+    }
+    #station.open { display: flex; }
+
+    .station-header {
+      padding: max(env(safe-area-inset-top, 12px), 12px) 16px 0;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+    .station-header h2  { font-size: 20px; font-weight: 900; margin-bottom: 2px; }
+    .station-header p   { font-size: 12px; color: #9ca3af; padding-bottom: 6px; }
+    .credits-cargo      { float: right; text-align: right; font-size: 13px; font-weight: 700; color: #FFD700; }
+    .credits-cargo small { display: block; color: #9ca3af; font-size: 10px; font-weight: 400; margin-top: 2px; }
+
+    .surplus-row {
+      display: flex; gap: 6px; overflow-x: auto; padding: 8px 0 10px;
+      scrollbar-width: none; flex-shrink: 0; flex-wrap: nowrap;
+    }
+    .surplus-row::-webkit-scrollbar { display: none; }
+    .tag { padding: 3px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+    .tag.green  { background: rgba(34,197,94,0.15);  color: #22C55E; }
+    .tag.orange { background: rgba(249,115,22,0.15); color: #F97316; }
+
+    /* Tabs */
+    .tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; }
+    .tab {
+      flex: 1; padding: 11px; text-align: center; font-size: 13px; font-weight: 600;
+      cursor: pointer; color: rgba(255,255,255,0.5); border: none; background: none;
+      border-bottom: 2px solid transparent; -webkit-tap-highlight-color: transparent;
+    }
+    .tab.active { color: #00E5FF; border-bottom-color: #00E5FF; }
+
+    .tab-content { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+
+    /* Refuel strip */
+    .refuel-strip {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer;
+    }
+    .refuel-strip span { font-size: 13px; font-weight: 600; }
+    .refuel-strip .cost { font-size: 13px; font-weight: 700; color: #00E5FF; }
+    .refuel-strip.disabled .cost { color: #6b7280; cursor: default; }
+
+    /* Category chips */
+    .chips { display: flex; gap: 8px; overflow-x: auto; padding: 8px 14px; scrollbar-width: none; flex-shrink: 0; }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip {
+      padding: 8px 12px; border-radius: 999px; font-size: 11px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; border: none; flex-shrink: 0;
+      background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .chip.active { background: #00E5FF; color: #000; }
+
+    /* Commodity list */
+    .commodity-list { padding: 0 14px 20px; }
+    .section-label { font-size: 11px; font-weight: 700; color: #6b7280; margin: 8px 0 4px; }
+    .comm-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px; border-radius: 12px; margin-bottom: 8px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    }
+    .comm-row.sell-row { background: rgba(249,115,22,0.07); border-color: rgba(249,115,22,0.2); }
+    .comm-emoji { font-size: 26px; flex-shrink: 0; }
+    .comm-info  { flex: 1; min-width: 0; }
+    .comm-name  { font-size: 13px; font-weight: 600; }
+    .comm-cat   { font-size: 10px; color: #6b7280; }
+    .comm-price { text-align: right; flex-shrink: 0; }
+    .price-val  { font-size: 12px; font-weight: 700; }
+    .price-val.good { color: #22C55E; }
+    .price-stock { font-size: 9px; color: #6b7280; }
+    .trade-btns { display: flex; gap: 4px; flex-shrink: 0; }
+    .trade-btn {
+      width: 44px; height: 44px; border-radius: 10px; border: none;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .trade-btn.buy     { background: rgba(0,229,255,0.18); color: #00E5FF; }
+    .trade-btn.sell1   { background: rgba(249,115,22,0.18); color: #F97316; }
+    .trade-btn.sellall { background: rgba(239,68,68,0.18);  color: #EF4444; }
+
+    /* Upgrade cards */
+    .ship-card {
+      padding: 14px; background: rgba(255,255,255,0.06);
+      border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 14px;
+    }
+    .ship-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .stat-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; }
+    .stat-row .label { color: #6b7280; }
+    .stat-row .val   { font-weight: 600; }
+
+    .upgrade-card {
+      padding: 14px; margin-bottom: 14px;
+      background: rgba(255,255,255,0.05); border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+    .upgrade-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .upgrade-icon   { font-size: 28px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.07); border-radius: 50%; }
+    .upgrade-title  { font-size: 15px; font-weight: 700; }
+    .upgrade-desc   { font-size: 11px; color: #6b7280; }
+    .level-dots     { display: flex; gap: 4px; }
+    .dot            { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+    .dot.filled     { background: #00E5FF; }
+    .upgrade-footer { display: flex; align-items: center; justify-content: space-between; }
+    .upgrade-next   { font-size: 12px; font-weight: 600; color: #A78BFA; }
+    .upgrade-max    { font-size: 11px; font-weight: 900; color: #FFD700; }
+    .upgrade-btn {
+      padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(255,215,0,0.5);
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      background: rgba(255,215,0,0.18); color: #FFD700;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .upgrade-btn:disabled {
+      background: rgba(255,255,255,0.06); color: #6b7280;
+      border-color: transparent; cursor: not-allowed;
+    }
+
+    .new-game-btn {
+      width: 100%; padding: 12px; margin-bottom: 20px;
+      background: rgba(239,68,68,0.08); color: rgba(239,68,68,0.7);
+      border: 1px solid rgba(239,68,68,0.2); border-radius: 12px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Log */
+    .log-list  { padding: 14px; }
+    .log-entry { display: flex; gap: 10px; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 10px; margin-bottom: 8px; }
+    .log-icon  { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .log-msg   { font-size: 12px; }
+    .log-time  { font-size: 10px; color: #6b7280; margin-top: 2px; }
+
+    /* Undock button */
+    .undock-btn {
+      margin: 0 16px; width: calc(100% - 32px);
+      padding: 14px;
+      background: #00E5FF; color: #000; border: none; border-radius: 14px;
+      font-size: 15px; font-weight: 700; cursor: pointer; flex-shrink: 0;
+      margin-bottom: max(calc(16px + env(safe-area-inset-bottom, 0px)), 16px);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.08); }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <!-- HUD (always visible) -->
+  <div id="hud">
+    <div class="hud-row">
+      <div class="hud-pill">💰 <span class="credits" id="hud-credits">500</span>cr</div>
+      <div style="flex:1"></div>
+      <div class="hud-pill">
+        ⛽&nbsp;
+        <div class="fuel-bar-wrap"><div class="fuel-bar" id="fuel-bar" style="width:100%;background:#22C55E"></div></div>
+        <span class="fuel-pct" id="hud-fuel-pct">100%</span>
+      </div>
+    </div>
+    <div class="hud-row">
+      <div class="hud-pill" id="speed-pill">⚡ <span id="hud-speed">0</span> u/s</div>
+    </div>
+  </div>
+
+  <div id="notification"></div>
+  <div id="fuel-warn">⚠️ FUEL CRITICAL — Dock to refuel!</div>
+  <button id="dock-btn">▼ Dock at <span id="dock-name"></span></button>
+
+  <!-- Station full-screen overlay -->
+  <div id="station"></div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
