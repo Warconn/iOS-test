@@ -63,7 +63,7 @@ export class UIManager {
   // ── Dock button ──────────────────────────────────────────────────────────
   showDockButton(loc: Location): void {
     this.dockName.textContent = loc.name
-    this.dockBtn.style.display = ''
+    this.dockBtn.style.display = 'block'
   }
 
   hideDockButton(): void {
