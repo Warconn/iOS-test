@@ -25,14 +25,14 @@ final class ShipTests: XCTestCase {
 
     // MARK: – Computed stats
 
-    func testMaxSpeedLevel1() { XCTAssertEqual(ship.maxSpeed, 160) }
+    func testMaxSpeedLevel1() { XCTAssertEqual(ship.maxSpeed, 240) }
     func testMaxCargoLevel1() { XCTAssertEqual(ship.maxCargo, 8) }
     func testScannerRangeLevel1() { XCTAssertEqual(ship.scannerRange, 1500) }
     func testMaxFuelLevel1() { XCTAssertEqual(ship.maxFuel, 110, accuracy: 0.001) }
 
     func testMaxSpeedIncreasesWithEngine() {
         ship.engineLevel = 3
-        XCTAssertEqual(ship.maxSpeed, 240)
+        XCTAssertEqual(ship.maxSpeed, 340)
     }
 
     func testMaxCargoIncreasesWithLevel() {

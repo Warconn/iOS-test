@@ -190,8 +190,8 @@ export function makeShip(): Ship {
 
 export const FUEL_CONSUMPTION_RATE = 0.3
 
-export function shipMaxSpeed(s: Ship):      number  { return 120 + s.engineLevel   * 40  }
-// 1→160  2→200  3→240  4→280  5→320
+export function shipMaxSpeed(s: Ship):      number  { return 190 + s.engineLevel   * 50  }
+// 1→240  2→290  3→340  4→390  5→440
 export function shipMaxCargo(s: Ship):      number  { return   4 + s.cargoLevel    * 4   }
 export function shipScannerRange(s: Ship):  number  { return 1000 + s.scannerLevel * 500 }
 // 1→1500  2→2000  3→2500  4→3000  5→3500

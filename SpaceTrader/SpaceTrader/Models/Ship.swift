@@ -104,8 +104,8 @@ struct Ship: Codable {
     }
 
     /// Max travel speed in universe units per second
-    var maxSpeed: CGFloat { CGFloat(120 + engineLevel * 40) }
-    // 1→160  2→200  3→240  4→280  5→320
+    var maxSpeed: CGFloat { CGFloat(190 + engineLevel * 50) }
+    // 1→240  2→290  3→340  4→390  5→440
 
     var maxCargo: Int { 4 + cargoLevel * 4 }
     // 1→8  2→12  3→16  4→20  5→24
@@ -171,7 +171,7 @@ struct Ship: Codable {
     func nextLevelDescription(for type: ShipUpgrade) -> String {
         let next = upgradeLevel(for: type) + 1
         switch type {
-        case .engine:   return "Max speed: \(120 + next * 40) u/s"
+        case .engine:   return "Max speed: \(190 + next * 50) u/s"
         case .cargo:    return "Cargo slots: \(4 + next * 4)"
         case .scanner:  return "Scanner range: \(1000 + next * 500) units"
         case .fuelTank: return "Max fuel: \(80 + next * 30)"
