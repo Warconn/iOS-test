@@ -17,7 +17,7 @@ final class GameViewModel: ObservableObject {
     // MARK: – Private
     private var gameTimer: Timer?
     private var lastTick: Date = Date()
-    private let saveKey = "spacetrader_v1"
+    private let saveKey = "spacetrader_v2"
     private var notificationTimer: Timer?
 
     struct BackgroundStar: Identifiable {
@@ -75,32 +75,44 @@ final class GameViewModel: ObservableObject {
         guard !ship.isDocked else { return }
 
         let throttle = joystickVector.magnitude
-        guard throttle > 0.05 else { return }
 
-        // Update heading (visual direction ship faces) regardless of fuel
-        ship.heading = atan2(joystickVector.y, joystickVector.x) + .pi / 2
+        // Update heading: face joystick direction when thrusting, else drift direction
+        if throttle > 0.05 {
+            ship.heading = atan2(joystickVector.y, joystickVector.x) + .pi / 2
+        } else if abs(ship.velX) > 5 || abs(ship.velY) > 5 {
+            ship.heading = atan2(ship.velY, ship.velX) + .pi / 2
+        }
 
-        // No thrust when out of fuel
-        guard ship.fuel > 0 else { return }
+        // Apply thrust (joystick active + has fuel)
+        if throttle > 0.05 && ship.fuel > 0 {
+            let targetVelX = joystickVector.x * ship.maxSpeed
+            let targetVelY = joystickVector.y * ship.maxSpeed
+            let accel: CGFloat = 6.0  // responsiveness factor
+            ship.velX += (targetVelX - ship.velX) * accel * CGFloat(dt)
+            ship.velY += (targetVelY - ship.velY) * accel * CGFloat(dt)
+            ship.fuel = max(0, ship.fuel - Double(throttle) * ship.fuelConsumptionRate * dt)
+        } else {
+            // Drift decay — 20% velocity remains after 1 second
+            let drag = pow(0.20, CGFloat(dt))
+            ship.velX *= drag
+            ship.velY *= drag
+            if abs(ship.velX) < 0.5 { ship.velX = 0 }
+            if abs(ship.velY) < 0.5 { ship.velY = 0 }
+        }
 
-        // Move ship
-        let speed  = ship.maxSpeed * CGFloat(throttle)
-        let normX  = joystickVector.x / max(throttle, 0.001)
-        let normY  = joystickVector.y / max(throttle, 0.001)
-        let newX   = (ship.posX + normX * speed * CGFloat(dt)).clamped(to: 50...Universe.size - 50)
-        let newY   = (ship.posY + normY * speed * CGFloat(dt)).clamped(to: 50...Universe.size - 50)
-        ship.posX  = newX
-        ship.posY  = newY
-
-        // Consume fuel
-        ship.fuel = max(0, ship.fuel - Double(throttle) * ship.fuelConsumptionRate * dt)
+        // Apply velocity to position
+        let currentSpeed = CGPoint(x: ship.velX, y: ship.velY).magnitude
+        if currentSpeed > 0.1 {
+            ship.posX = (ship.posX + ship.velX * CGFloat(dt)).clamped(to: 50...Universe.size - 50)
+            ship.posY = (ship.posY + ship.velY * CGFloat(dt)).clamped(to: 50...Universe.size - 50)
+        }
 
         // Discover locations in scanner range
         discoverNear(ship.position, range: ship.scannerRange)
 
         // Check for dockable location
         let dockable = universe.first {
-            $0.isDiscovered && $0.position.distance(to: ship.position) < 110
+            $0.isDiscovered && $0.position.distance(to: ship.position) < 200
         }
         if dockable?.id != nearbyLocation?.id {
             withAnimation(.easeInOut(duration: 0.3)) { nearbyLocation = dockable }
@@ -125,6 +137,8 @@ final class GameViewModel: ObservableObject {
         gameTimer?.invalidate()
         gameTimer = nil
         joystickVector = .zero
+        ship.velX = 0
+        ship.velY = 0
         ship.currentLocationId = loc.id
         if let i = universe.firstIndex(where: { $0.id == loc.id }) {
             universe[i].visitCount += 1
@@ -246,7 +260,7 @@ final class GameViewModel: ObservableObject {
     }
 
     static func load() -> SaveData? {
-        guard let data = UserDefaults.standard.data(forKey: "spacetrader_v1"),
+        guard let data = UserDefaults.standard.data(forKey: "spacetrader_v2"),
               let save = try? JSONDecoder().decode(SaveData.self, from: data) else { return nil }
         return save
     }

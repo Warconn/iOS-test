@@ -5,10 +5,10 @@ import {
   shipCargoQty, addCargo, removeCargo, upgradeCost, applyUpgrade,
   upgradeLevel, upgradeDisplayName, refreshMarket, dist2d, findCommodity,
 } from './models.ts'
-import { generateUniverse, generateStars, BackgroundStar } from './universe.ts'
+import { generateUniverse, generateStars, BackgroundStar, UNIVERSE_SIZE } from './universe.ts'
 
-const SAVE_KEY = 'spacetrader_web_v1'
-const DOCK_RANGE = 110
+const SAVE_KEY = 'spacetrader_web_v2'
+const DOCK_RANGE = 200
 const UNDOCK_COOLDOWN = 2000  // ms
 
 export class GameState {
@@ -36,7 +36,7 @@ export class GameState {
   constructor() {
     const saved = GameState.load()
     if (saved) {
-      this.ship     = saved.ship
+      this.ship     = { velX: 0, velY: 0, ...saved.ship }  // migrate missing drift fields
       this.universe = saved.universe
       this.journal  = saved.journal
     } else {
@@ -55,26 +55,41 @@ export class GameState {
 
     const throttle = Math.sqrt(this.joystick.x ** 2 + this.joystick.y ** 2)
 
-    // Always update heading for visual feedback
+    // Update heading: face joystick when thrusting, else face velocity direction when drifting
     if (throttle > 0.05) {
       this.ship.heading = Math.atan2(this.joystick.y, this.joystick.x) + Math.PI / 2
+    } else if (Math.abs(this.ship.velX) > 5 || Math.abs(this.ship.velY) > 5) {
+      this.ship.heading = Math.atan2(this.ship.velY, this.ship.velX) + Math.PI / 2
     }
 
-    // No movement at zero fuel
+    // Apply thrust (joystick active + has fuel)
     if (throttle > 0.05 && this.ship.fuel > 0) {
-      const speed = shipMaxSpeed(this.ship) * throttle
-      const norm  = throttle > 0 ? throttle : 1
-      const nx = this.joystick.x / norm
-      const ny = this.joystick.y / norm
-      this.ship.posX = Math.max(50, Math.min(7950, this.ship.posX + nx * speed * dt))
-      this.ship.posY = Math.max(50, Math.min(7950, this.ship.posY + ny * speed * dt))
+      const targetVelX = this.joystick.x * shipMaxSpeed(this.ship)
+      const targetVelY = this.joystick.y * shipMaxSpeed(this.ship)
+      const accel = 6.0
+      this.ship.velX += (targetVelX - this.ship.velX) * accel * dt
+      this.ship.velY += (targetVelY - this.ship.velY) * accel * dt
       this.ship.fuel = Math.max(0, this.ship.fuel - throttle * FUEL_CONSUMPTION_RATE * dt)
+    } else {
+      // Drift decay — 20% velocity remains after 1 second
+      const drag = Math.pow(0.20, dt)
+      this.ship.velX *= drag
+      this.ship.velY *= drag
+      if (Math.abs(this.ship.velX) < 0.5) this.ship.velX = 0
+      if (Math.abs(this.ship.velY) < 0.5) this.ship.velY = 0
+    }
+
+    // Apply velocity to position
+    const currentSpeed = Math.sqrt(this.ship.velX ** 2 + this.ship.velY ** 2)
+    if (currentSpeed > 0.1) {
+      const bound = UNIVERSE_SIZE - 50
+      this.ship.posX = Math.max(50, Math.min(bound, this.ship.posX + this.ship.velX * dt))
+      this.ship.posY = Math.max(50, Math.min(bound, this.ship.posY + this.ship.velY * dt))
     }
 
     this.discoverNear()
 
-    // Dock proximity check (with undock cooldown)
-    const now = Date.now()
+    // Dock proximity check
     const dockable = this.universe.find(l =>
       l.isDiscovered && dist2d(l.posX, l.posY, this.ship.posX, this.ship.posY) < DOCK_RANGE
     ) ?? null
@@ -105,6 +120,8 @@ export class GameState {
     const loc = this.nearbyLocation
     if (!loc) return
     this.joystick = { x: 0, y: 0 }
+    this.ship.velX = 0
+    this.ship.velY = 0
     this.ship.currentLocationId = loc.id
     const i = this.universe.findIndex(l => l.id === loc.id)
     if (i >= 0) {

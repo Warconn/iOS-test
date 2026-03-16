@@ -5,7 +5,7 @@ import {
 } from './models.ts'
 import { UNIVERSE_SIZE } from './universe.ts'
 
-const SCALE = 0.20  // 1 world unit = 0.20 CSS px; viewport ≈ 1950 wide on 390pt screen
+const SCALE = 0.08  // 1 world unit = 0.08 CSS px; viewport ≈ 4875 wide on 390pt screen
 
 export class Renderer {
   private canvas: HTMLCanvasElement
@@ -117,10 +117,10 @@ export class Renderer {
       ctx.beginPath(); ctx.arc(sp.x, sp.y, r, 0, Math.PI * 2)
       ctx.fillStyle = color; ctx.fill()
 
-      // Label (fade in when within 1200 units)
+      // Label (fade in when within 3000 units)
       const d = dist2d(loc.posX, loc.posY, state.ship.posX, state.ship.posY)
-      if (d < 1200) {
-        const alpha = Math.min(1, (1200 - d) / 600)
+      if (d < 3000) {
+        const alpha = Math.min(1, (3000 - d) / 1500)
         ctx.fillStyle = `rgba(255,255,255,${alpha})`
         ctx.font = '600 9px -apple-system, sans-serif'
         ctx.textAlign = 'center'
@@ -129,11 +129,63 @@ export class Renderer {
     }
     ctx.textAlign = 'left'
 
-    // ── 4. Ship ─────────────────────────────────────────────────────────────
+    // ── 4. Navigation arrows for off-screen discovered locations ────────────
+    if (!shipIsDocked(state.ship)) {
+      const arrowMargin = 30
+      const left = arrowMargin, right = this.w - arrowMargin
+      const top = arrowMargin, bottom = this.h - arrowMargin
+      const cx = ss.x, cy = ss.y
+
+      for (const loc of state.universe) {
+        if (!loc.isDiscovered) continue
+        const sp2 = this.w2s(loc.posX, loc.posY, state.ship)
+        if (sp2.x >= left && sp2.x <= right && sp2.y >= top && sp2.y <= bottom) continue
+
+        const dx = loc.posX - state.ship.posX
+        const dy = loc.posY - state.ship.posY
+        const angle = Math.atan2(dy, dx)
+        const cosA = Math.cos(angle), sinA = Math.sin(angle)
+        const eps = 1e-6
+
+        let tMin = 99999
+        if (cosA >  eps) tMin = Math.min(tMin, (right  - cx) / cosA)
+        else if (cosA < -eps) tMin = Math.min(tMin, (left   - cx) / cosA)
+        if (sinA >  eps) tMin = Math.min(tMin, (bottom - cy) / sinA)
+        else if (sinA < -eps) tMin = Math.min(tMin, (top    - cy) / sinA)
+
+        const ax = cx + cosA * tMin
+        const ay = cy + sinA * tMin
+        const color = LOCATION_TYPE_INFO[loc.type].mapColor
+        const arrowSize = 7
+
+        ctx.save()
+        ctx.translate(ax, ay)
+        ctx.rotate(angle)
+        ctx.beginPath()
+        ctx.moveTo(arrowSize, 0)
+        ctx.lineTo(-arrowSize * 0.6, -arrowSize * 0.5)
+        ctx.lineTo(-arrowSize * 0.6,  arrowSize * 0.5)
+        ctx.closePath()
+        ctx.fillStyle = color + 'E6'
+        ctx.fill()
+        ctx.restore()
+
+        // Distance label
+        const dist = dist2d(loc.posX, loc.posY, state.ship.posX, state.ship.posY)
+        const distLabel = dist >= 1000 ? (dist / 1000).toFixed(1) + 'k' : Math.round(dist).toString()
+        ctx.fillStyle = 'rgba(255,255,255,0.65)'
+        ctx.font = 'bold 7px -apple-system, sans-serif'
+        ctx.textAlign = 'center'
+        ctx.fillText(distLabel, ax - cosA * 14, ay - sinA * 14 + 3)
+        ctx.textAlign = 'left'
+      }
+    }
+
+    // ── 5. Ship ─────────────────────────────────────────────────────────────
     if (!shipIsDocked(state.ship)) {
       this.drawShip(ss.x, ss.y, state.ship.heading)
 
-      // ── 5. Engine exhaust ───────────────────────────────────────────────
+      // ── 6. Engine exhaust ───────────────────────────────────────────────
       const throttle = Math.sqrt(state.joystick.x ** 2 + state.joystick.y ** 2)
       if (throttle > 0.08 && state.ship.fuel > 0) {
         this.drawExhaust(ss.x, ss.y, state.ship.heading, throttle)

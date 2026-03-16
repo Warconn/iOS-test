@@ -1,9 +1,9 @@
 import { SeededRandom, LocationType, Location, buildMarket } from './models.ts'
 
 // ─── Universe constants (identical to Swift) ─────────────────────────────────
-export const UNIVERSE_SIZE      = 8000
-export const MIN_SPACING        = 280
-export const LOCATION_COUNT     = 75
+export const UNIVERSE_SIZE      = 25000
+export const MIN_SPACING        = 4000
+export const LOCATION_COUNT     = 20
 export const UNIVERSE_SEED      = 0xDEADBEEFC0FFEE42n  // same as Swift
 
 // ─── Background star (screen-space, generated once) ──────────────────────────
