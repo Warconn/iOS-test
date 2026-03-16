@@ -76,9 +76,13 @@ struct JournalEntry: Identifiable, Codable {
 
 struct Ship: Codable {
     // Position stored as scalars for Codable safety
-    var posX: CGFloat = 4000
-    var posY: CGFloat = 4000
+    var posX: CGFloat = 12500
+    var posY: CGFloat = 12500
     var heading: CGFloat = 0  // radians; 0 = up, increases clockwise
+
+    // Physics drift velocity (world units / second)
+    var velX: CGFloat = 0
+    var velY: CGFloat = 0
 
     var credits: Int = 500
     var cargo: [CargoItem] = []
@@ -100,19 +104,19 @@ struct Ship: Codable {
     }
 
     /// Max travel speed in universe units per second
-    var maxSpeed: CGFloat { CGFloat(150 + engineLevel * 60) }
-    // 1→210  2→270  3→330  4→390  5→450
+    var maxSpeed: CGFloat { CGFloat(120 + engineLevel * 40) }
+    // 1→160  2→200  3→240  4→280  5→320
 
     var maxCargo: Int { 4 + cargoLevel * 4 }
     // 1→8  2→12  3→16  4→20  5→24
 
-    var scannerRange: CGFloat { CGFloat(700 + scannerLevel * 350) }
-    // 1→1050  2→1400  3→1750  4→2100  5→2450
+    var scannerRange: CGFloat { CGFloat(1000 + scannerLevel * 500) }
+    // 1→1500  2→2000  3→2500  4→3000  5→3500
 
     var maxFuel: Double { Double(80 + fuelTankLevel * 30) }
     // 1→110  2→140  3→170  4→200  5→230
 
-    var fuelConsumptionRate: Double { 3.0 }  // units per second at full throttle
+    var fuelConsumptionRate: Double { 0.3 }  // units per second at full throttle
 
     var cargoUsed: Int { cargo.reduce(0) { $0 + $1.quantity } }
     var cargoFree: Int { maxCargo - cargoUsed }
@@ -167,9 +171,9 @@ struct Ship: Codable {
     func nextLevelDescription(for type: ShipUpgrade) -> String {
         let next = upgradeLevel(for: type) + 1
         switch type {
-        case .engine:   return "Max speed: \(150 + next * 60) u/s"
+        case .engine:   return "Max speed: \(120 + next * 40) u/s"
         case .cargo:    return "Cargo slots: \(4 + next * 4)"
-        case .scanner:  return "Scanner range: \(700 + next * 350) units"
+        case .scanner:  return "Scanner range: \(1000 + next * 500) units"
         case .fuelTank: return "Max fuel: \(80 + next * 30)"
         }
     }

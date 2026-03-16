@@ -42,9 +42,9 @@ extension CGPoint {
 // MARK: – Universe generation
 
 enum Universe {
-    static let size: CGFloat = 8000
-    static let minimumSpacing: CGFloat = 280
-    static let locationCount: Int = 75
+    static let size: CGFloat = 25000
+    static let minimumSpacing: CGFloat = 4000
+    static let locationCount: Int = 20
     static let universeSeed: UInt64 = 0xDEADBEEF_C0FFEE42
 
     // Name components

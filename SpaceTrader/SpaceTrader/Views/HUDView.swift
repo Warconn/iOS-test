@@ -79,9 +79,10 @@ struct HUDView: View {
     }
 
     private var speedBadge: some View {
-        let currentSpeed = Int(vm.ship.maxSpeed * vm.joystickVector.magnitude)
+        let vel = CGPoint(x: vm.ship.velX, y: vm.ship.velY)
+        let currentSpeed = Int(vel.magnitude)
         return Group {
-            if currentSpeed > 10 {
+            if currentSpeed > 5 {
                 Text("⚡ \(currentSpeed) u/s")
                     .font(.system(size: 10, weight: .medium, design: .monospaced))
                     .foregroundColor(.cyan.opacity(0.8))

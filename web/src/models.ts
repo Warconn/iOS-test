@@ -167,6 +167,7 @@ export interface CargoItem { commodityId: string; quantity: number }
 export interface Ship {
   posX: number; posY: number
   heading: number
+  velX: number; velY: number   // physics drift velocity (world units/s)
   credits: number
   cargo: CargoItem[]
   fuel: number
@@ -179,18 +180,21 @@ export interface Ship {
 
 export function makeShip(): Ship {
   return {
-    posX: 4000, posY: 4000, heading: 0,
+    posX: 12500, posY: 12500, heading: 0,
+    velX: 0, velY: 0,
     credits: 500, cargo: [], fuel: 110,
     engineLevel: 1, cargoLevel: 1, scannerLevel: 1, fuelTankLevel: 1,
     currentLocationId: 'start',
   }
 }
 
-export const FUEL_CONSUMPTION_RATE = 3.0
+export const FUEL_CONSUMPTION_RATE = 0.3
 
-export function shipMaxSpeed(s: Ship):      number  { return 150 + s.engineLevel   * 60 }
-export function shipMaxCargo(s: Ship):      number  { return   4 + s.cargoLevel    * 4  }
-export function shipScannerRange(s: Ship):  number  { return 700 + s.scannerLevel  * 350 }
+export function shipMaxSpeed(s: Ship):      number  { return 120 + s.engineLevel   * 40  }
+// 1→160  2→200  3→240  4→280  5→320
+export function shipMaxCargo(s: Ship):      number  { return   4 + s.cargoLevel    * 4   }
+export function shipScannerRange(s: Ship):  number  { return 1000 + s.scannerLevel * 500 }
+// 1→1500  2→2000  3→2500  4→3000  5→3500
 export function shipMaxFuel(s: Ship):       number  { return  80 + s.fuelTankLevel * 30 }
 export function shipCargoUsed(s: Ship):     number  { return s.cargo.reduce((n, c) => n + c.quantity, 0) }
 export function shipCargoFree(s: Ship):     number  { return shipMaxCargo(s) - shipCargoUsed(s) }
@@ -244,9 +248,9 @@ export function upgradeEmoji(t: ShipUpgrade): string {
 export function upgradeNextDesc(s: Ship, t: ShipUpgrade): string {
   const n = upgradeLevel(s, t) + 1
   switch (t) {
-    case 'engine':   return `Max speed: ${150 + n * 60} u/s`
+    case 'engine':   return `Max speed: ${120 + n * 40} u/s`
     case 'cargo':    return `Cargo slots: ${4 + n * 4}`
-    case 'scanner':  return `Scanner range: ${700 + n * 350} units`
+    case 'scanner':  return `Scanner range: ${1000 + n * 500} units`
     case 'fuelTank': return `Max fuel: ${80 + n * 30}`
   }
 }
