@@ -42,15 +42,7 @@ struct HUDView: View {
             // ── Speed & location info ────────────────────────────
             HStack {
                 if !vm.ship.isDocked {
-                    let throttle = vm.joystickVector.magnitude
-                    let currentSpeed = Int(vm.ship.maxSpeed * CGFloat(throttle))
-                    if currentSpeed > 10 {
-                        Text("⚡ \(currentSpeed) u/s")
-                            .font(.system(size: 10, weight: .medium, design: .monospaced))
-                            .foregroundColor(.cyan.opacity(0.8))
-                            .padding(.horizontal, 8).padding(.vertical, 3)
-                            .background(Capsule().fill(Color.black.opacity(0.5)))
-                    }
+                    speedBadge
                 } else if let loc = vm.currentLocation {
                     HStack(spacing: 4) {
                         Text(loc.type.emoji).font(.system(size: 11))
@@ -84,6 +76,19 @@ struct HUDView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var speedBadge: some View {
+        let currentSpeed = Int(vm.ship.maxSpeed * vm.joystickVector.magnitude)
+        return Group {
+            if currentSpeed > 10 {
+                Text("⚡ \(currentSpeed) u/s")
+                    .font(.system(size: 10, weight: .medium, design: .monospaced))
+                    .foregroundColor(.cyan.opacity(0.8))
+                    .padding(.horizontal, 8).padding(.vertical, 3)
+                    .background(Capsule().fill(Color.black.opacity(0.5)))
+            }
+        }
     }
 
     private var fuelColor: Color {

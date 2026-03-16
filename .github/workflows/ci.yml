@@ -10,14 +10,17 @@ jobs:
   # ── HeroesAscent ─────────────────────────────────────────────────────
   heroes-ascent:
     name: HeroesAscent – Build & Test
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 
       - name: Select Xcode
         run: |
-          # Use latest available Xcode 15
-          XCODE=$(ls /Applications | grep '^Xcode_15' | sort -V | tail -1)
+          # Use latest available Xcode 16
+          XCODE=$(ls /Applications | grep '^Xcode_16' | sort -V | tail -1)
+          if [ -z "$XCODE" ]; then
+            XCODE=$(ls /Applications | grep '^Xcode_' | sort -V | tail -1)
+          fi
           sudo xcode-select -s "/Applications/${XCODE}/Contents/Developer"
           xcodebuild -version
 
@@ -28,12 +31,12 @@ jobs:
           xcodebuild build \
             -project HeroesAscent.xcodeproj \
             -scheme HeroesAscent \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             -configuration Debug \
             CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
             | xcpretty || xcodebuild build \
               -project HeroesAscent.xcodeproj -scheme HeroesAscent \
-              -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+              -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
               -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
       - name: Test
@@ -43,7 +46,7 @@ jobs:
           xcodebuild test \
             -project HeroesAscent.xcodeproj \
             -scheme HeroesAscent \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             -configuration Debug \
             CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
             -resultBundlePath TestResults.xcresult
@@ -59,13 +62,17 @@ jobs:
   # ── SpaceTrader ───────────────────────────────────────────────────────
   space-trader:
     name: SpaceTrader – Build & Test
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 
       - name: Select Xcode
         run: |
-          XCODE=$(ls /Applications | grep '^Xcode_15' | sort -V | tail -1)
+          # Use latest available Xcode 16
+          XCODE=$(ls /Applications | grep '^Xcode_16' | sort -V | tail -1)
+          if [ -z "$XCODE" ]; then
+            XCODE=$(ls /Applications | grep '^Xcode_' | sort -V | tail -1)
+          fi
           sudo xcode-select -s "/Applications/${XCODE}/Contents/Developer"
           xcodebuild -version
 
@@ -76,12 +83,12 @@ jobs:
           xcodebuild build \
             -project SpaceTrader.xcodeproj \
             -scheme SpaceTrader \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             -configuration Debug \
             CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
             | xcpretty || xcodebuild build \
               -project SpaceTrader.xcodeproj -scheme SpaceTrader \
-              -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+              -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
               -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
       - name: Test
@@ -91,7 +98,7 @@ jobs:
           xcodebuild test \
             -project SpaceTrader.xcodeproj \
             -scheme SpaceTrader \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             -configuration Debug \
             CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
             -resultBundlePath TestResults.xcresult

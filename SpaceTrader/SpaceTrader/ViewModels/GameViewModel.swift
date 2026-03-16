@@ -93,7 +93,7 @@ final class GameViewModel: ObservableObject {
         ship.posY  = newY
 
         // Consume fuel
-        ship.fuel = max(0, ship.fuel - throttle * ship.fuelConsumptionRate * dt)
+        ship.fuel = max(0, ship.fuel - Double(throttle) * ship.fuelConsumptionRate * dt)
 
         // Discover locations in scanner range
         discoverNear(ship.position, range: ship.scannerRange)
@@ -184,7 +184,7 @@ final class GameViewModel: ObservableObject {
     }
 
     func refuel() {
-        guard let locId = ship.currentLocationId else { return }
+        guard ship.currentLocationId != nil else { return }
         let fuelNeeded = ship.maxFuel - ship.fuel
         guard fuelNeeded > 0.5 else { return }
         let cost = max(1, Int(fuelNeeded * 2.0))   // 2cr per fuel unit
@@ -274,6 +274,6 @@ final class GameViewModel: ObservableObject {
 // MARK: – CGFloat clamping helper
 extension CGFloat {
     func clamped(to range: ClosedRange<CGFloat>) -> CGFloat {
-        min(max(self, range.lowerBound), range.upperBound)
+        Swift.min(Swift.max(self, range.lowerBound), range.upperBound)
     }
 }
