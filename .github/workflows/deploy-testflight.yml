@@ -38,51 +38,54 @@ on:
       - "SpaceTrader/**"
 
 jobs:
-  # ── Shared signing setup ───────────────────────────────────────────
-  sign:
-    name: Install signing assets
-    runs-on: macos-14
-    outputs:
-      keychain_path: ${{ steps.keychain.outputs.path }}
-    steps:
-      - id: keychain
-        name: Create keychain and import certificate
-        env:
-          DIST_CERT_BASE64:  ${{ secrets.DIST_CERT_BASE64 }}
-          DIST_CERT_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-        run: |
-          KEYCHAIN=$RUNNER_TEMP/build.keychain
-          CERT=$RUNNER_TEMP/dist.p12
-          echo "$DIST_CERT_BASE64"  | base64 --decode -o "$CERT"
-          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
-          security set-keychain-settings -lut 21600 "$KEYCHAIN"
-          security unlock-keychain  -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
-          security import "$CERT" -k "$KEYCHAIN" -P "$DIST_CERT_PASSWORD" -T /usr/bin/codesign
-          security list-keychain -d user -s "$KEYCHAIN"
-          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
-          echo "path=$KEYCHAIN" >> $GITHUB_OUTPUT
-
   # ── HeroesAscent deploy ────────────────────────────────────────────
   deploy-heroesascent:
     name: Deploy HeroesAscent → TestFlight
-    needs: sign
-    runs-on: macos-14
+    runs-on: macos-15
     if: |
-      github.event_name == 'workflow_dispatch' && (inputs.app == 'heroesascent' || inputs.app == 'both') ||
-      (github.event_name == 'push' && contains(github.event.head_commit.modified, 'HeroesAscent/'))
+      (github.event_name == 'workflow_dispatch' && (inputs.app == 'heroesascent' || inputs.app == 'both')) ||
+      github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
 
       - name: Select Xcode
         run: |
-          XCODE=$(ls /Applications | grep '^Xcode_15' | sort -V | tail -1)
+          XCODE=$(ls /Applications | grep '^Xcode_16' | sort -V | tail -1)
+          if [ -z "$XCODE" ]; then
+            XCODE=$(ls /Applications | grep '^Xcode_' | sort -V | tail -1)
+          fi
           sudo xcode-select -s "/Applications/${XCODE}/Contents/Developer"
+          xcodebuild -version
+
+      - name: Install signing certificate
+        env:
+          DIST_CERT_BASE64:   ${{ secrets.DIST_CERT_BASE64 }}
+          DIST_CERT_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
+          KEYCHAIN_PASSWORD:  ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          if [ -z "$DIST_CERT_BASE64" ]; then
+            echo "ERROR: DIST_CERT_BASE64 secret is not set."
+            echo "Add your distribution certificate in GitHub → Settings → Secrets and Variables → Actions."
+            exit 1
+          fi
+          KEYCHAIN=$RUNNER_TEMP/build.keychain
+          CERT=$RUNNER_TEMP/dist.p12
+          echo "$DIST_CERT_BASE64" | base64 --decode -o "$CERT"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$CERT" -k "$KEYCHAIN" -P "$DIST_CERT_PASSWORD" -T /usr/bin/codesign
+          security list-keychain -d user -s "$KEYCHAIN"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
 
       - name: Install provisioning profile
         env:
           HA_PROVISION_BASE64: ${{ secrets.HA_PROVISION_BASE64 }}
         run: |
+          if [ -z "$HA_PROVISION_BASE64" ]; then
+            echo "ERROR: HA_PROVISION_BASE64 secret is not set."
+            exit 1
+          fi
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           echo "$HA_PROVISION_BASE64" | base64 --decode \
             -o ~/Library/MobileDevice/Provisioning\ Profiles/ha_appstore.mobileprovision
@@ -104,9 +107,9 @@ jobs:
 
       - name: Export & Upload
         env:
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          ASC_KEY_ID:    ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APPLE_TEAM_ID:  ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID:     ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID:  ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_BASE64: ${{ secrets.ASC_KEY_BASE64 }}
         run: |
           cat > $RUNNER_TEMP/ExportOptions.plist <<PLIST
@@ -133,23 +136,51 @@ jobs:
   # ── SpaceTrader deploy ─────────────────────────────────────────────
   deploy-spacetrader:
     name: Deploy SpaceTrader → TestFlight
-    needs: sign
-    runs-on: macos-14
+    runs-on: macos-15
     if: |
-      github.event_name == 'workflow_dispatch' && (inputs.app == 'spacetrader' || inputs.app == 'both') ||
-      (github.event_name == 'push' && contains(github.event.head_commit.modified, 'SpaceTrader/'))
+      (github.event_name == 'workflow_dispatch' && (inputs.app == 'spacetrader' || inputs.app == 'both')) ||
+      github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
 
       - name: Select Xcode
         run: |
-          XCODE=$(ls /Applications | grep '^Xcode_15' | sort -V | tail -1)
+          XCODE=$(ls /Applications | grep '^Xcode_16' | sort -V | tail -1)
+          if [ -z "$XCODE" ]; then
+            XCODE=$(ls /Applications | grep '^Xcode_' | sort -V | tail -1)
+          fi
           sudo xcode-select -s "/Applications/${XCODE}/Contents/Developer"
+          xcodebuild -version
+
+      - name: Install signing certificate
+        env:
+          DIST_CERT_BASE64:   ${{ secrets.DIST_CERT_BASE64 }}
+          DIST_CERT_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
+          KEYCHAIN_PASSWORD:  ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          if [ -z "$DIST_CERT_BASE64" ]; then
+            echo "ERROR: DIST_CERT_BASE64 secret is not set."
+            echo "Add your distribution certificate in GitHub → Settings → Secrets and Variables → Actions."
+            exit 1
+          fi
+          KEYCHAIN=$RUNNER_TEMP/build.keychain
+          CERT=$RUNNER_TEMP/dist.p12
+          echo "$DIST_CERT_BASE64" | base64 --decode -o "$CERT"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$CERT" -k "$KEYCHAIN" -P "$DIST_CERT_PASSWORD" -T /usr/bin/codesign
+          security list-keychain -d user -s "$KEYCHAIN"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
 
       - name: Install provisioning profile
         env:
           ST_PROVISION_BASE64: ${{ secrets.ST_PROVISION_BASE64 }}
         run: |
+          if [ -z "$ST_PROVISION_BASE64" ]; then
+            echo "ERROR: ST_PROVISION_BASE64 secret is not set."
+            exit 1
+          fi
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           echo "$ST_PROVISION_BASE64" | base64 --decode \
             -o ~/Library/MobileDevice/Provisioning\ Profiles/st_appstore.mobileprovision
@@ -171,9 +202,9 @@ jobs:
 
       - name: Export & Upload
         env:
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          ASC_KEY_ID:    ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APPLE_TEAM_ID:  ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID:     ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID:  ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_BASE64: ${{ secrets.ASC_KEY_BASE64 }}
         run: |
           cat > $RUNNER_TEMP/ExportOptions.plist <<PLIST

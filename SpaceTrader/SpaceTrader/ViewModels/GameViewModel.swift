@@ -100,7 +100,7 @@ final class GameViewModel: ObservableObject {
 
         // Check for dockable location
         let dockable = universe.first {
-            $0.isDiscovered && $0.position.distance(to: ship.position) < 55
+            $0.isDiscovered && $0.position.distance(to: ship.position) < 110
         }
         if dockable?.id != nearbyLocation?.id {
             withAnimation(.easeInOut(duration: 0.3)) { nearbyLocation = dockable }

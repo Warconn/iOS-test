@@ -91,6 +91,7 @@ enum Universe {
         ]
 
         // 3. Poisson-disk-like rejection sampling
+        var usedNames: Set<String> = ["Sol Nexus"]
         var attempts = 0
         while locations.count < locationCount && attempts < locationCount * 40 {
             attempts += 1
@@ -101,7 +102,13 @@ enum Universe {
             guard locations.allSatisfy({ $0.position.distance(to: pos) >= minimumSpacing }) else { continue }
 
             let type = rng.pick(from: typePool)
-            let name = buildName(rng: &rng)
+            var name = buildName(rng: &rng)
+            var nameRetries = 0
+            while usedNames.contains(name) && nameRetries < 10 {
+                name = buildName(rng: &rng)
+                nameRetries += 1
+            }
+            usedNames.insert(name)
             let seed = rng.nextUInt64()
             let loc = Location(
                 id: "loc_\(locations.count)",
