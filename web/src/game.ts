@@ -235,8 +235,7 @@ export class GameState {
     this.ship.posX = this.universe[0].posX
     this.ship.posY = this.universe[0].posY
     this.discoverNear()
-    this.onStationClose?.()
-    this.onDockChange?.(null)
+    this.onStationOpen?.(this.universe[0])
     this.onHUDChange?.()
   }
 }
