@@ -93,7 +93,7 @@ final class GameViewModel: ObservableObject {
         ship.posY  = newY
 
         // Consume fuel
-        ship.fuel = max(0, ship.fuel - throttle * ship.fuelConsumptionRate * dt)
+        ship.fuel = max(0, ship.fuel - Double(throttle) * ship.fuelConsumptionRate * dt)
 
         // Discover locations in scanner range
         discoverNear(ship.position, range: ship.scannerRange)
