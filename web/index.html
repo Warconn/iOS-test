@@ -74,6 +74,17 @@
     /* ── Speed pill ─────────────────────────────────────────────────────── */
     #speed-pill { display: none; }
 
+    /* ── Reset button ───────────────────────────────────────────────────── */
+    #reset-btn {
+      position: fixed; top: max(env(safe-area-inset-top, 0px), 12px); right: 14px;
+      margin-top: 2px;
+      background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px; color: rgba(255,255,255,0.45);
+      font-size: 18px; line-height: 1; padding: 5px 9px;
+      cursor: pointer; z-index: 15; backdrop-filter: blur(4px);
+      -webkit-tap-highlight-color: transparent;
+    }
+
     /* ── Station overlay (full-screen sheet) ────────────────────────────── */
     #station {
       position: fixed; inset: 0;
@@ -246,6 +257,7 @@
     </div>
   </div>
 
+  <button id="reset-btn" title="New game">↺</button>
   <div id="notification"></div>
   <div id="fuel-warn">⚠️ FUEL CRITICAL — Dock to refuel!</div>
   <button id="dock-btn">▼ Dock at <span id="dock-name"></span></button>

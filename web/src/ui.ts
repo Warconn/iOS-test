@@ -305,6 +305,9 @@ export class UIManager {
   // ── Event binding ─────────────────────────────────────────────────────────
   private bindEvents(): void {
     document.getElementById('dock-btn')?.addEventListener('click', () => this.state.dock())
+    document.getElementById('reset-btn')?.addEventListener('click', () => {
+      if (confirm('Start new game? All progress will be lost.')) this.state.reset()
+    })
   }
 
   /** Bind events inside the current tab content (re-called on tab switch) */
